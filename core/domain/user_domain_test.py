@@ -1829,3 +1829,65 @@ class UserContributionRightsUnitTest(
                 'a', [], [], True, False))
         self.assertFalse(
             user_contribution_rights.can_submit_at_least_one_item())
+
+
+class UserSubscriptionsTests(test_utils.GenericTestBase):
+    """Tests for the UserSubscriptions domain object."""
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.now = datetime.datetime.utcnow()
+        self.valid_obj = user_domain.UserSubscriptions(
+            user_id='user_123',
+            creator_ids=['creator_1', 'creator_2'],
+            collection_ids=['col_1'],
+            exploration_ids=['exp_1', 'exp_2'],
+            general_feedback_thread_ids=['thread_1'],
+            last_checked=self.now
+        )
+
+    def test_validate_with_valid_data(self) -> None:
+        self.valid_obj.validate()
+
+    def test_validate_with_empty_user_id_raises(self) -> None:
+        self.valid_obj.user_id = ''
+        with self.assertRaisesRegex(utils.ValidationError, 'user_id must be a non-empty string'):
+            self.valid_obj.validate()
+
+    def test_validate_with_non_list_creator_ids_raises(self) -> None:
+        self.valid_obj.creator_ids = 'notalist'
+        with self.assertRaisesRegex(utils.ValidationError, 'creator_ids must be a list'):
+            self.valid_obj.validate()
+
+    def test_validate_with_duplicate_exploration_ids_raises(self) -> None:
+        self.valid_obj.exploration_ids = ['exp_1', 'exp_1']
+        with self.assertRaisesRegex(utils.ValidationError, 'exploration_ids must not contain duplicate values'):
+            self.valid_obj.validate()
+
+    def test_validate_with_non_string_in_collection_ids_raises(self) -> None:
+        self.valid_obj.collection_ids = [123]
+        with self.assertRaisesRegex(utils.ValidationError, 'All elements of collection_ids must be non-empty strings'):
+            self.valid_obj.validate()
+
+    def test_validate_with_empty_string_in_thread_ids_raises(self) -> None:
+        self.valid_obj.general_feedback_thread_ids = ['']
+        with self.assertRaisesRegex(utils.ValidationError, 'All elements of general_feedback_thread_ids must be non-empty strings'):
+            self.valid_obj.validate()
+
+    def test_validate_with_invalid_last_checked_type_raises(self) -> None:
+        self.valid_obj.last_checked = 'notadatetime'
+        with self.assertRaisesRegex(utils.ValidationError, 'last_checked must be a datetime or None'):
+            self.valid_obj.validate()
+
+    def test_to_dict_and_from_model(self) -> None:
+        class DummyModel:
+            id = 'user_123'
+            creator_ids = ['creator_1']
+            collection_ids = ['col_1']
+            exploration_ids = ['exp_1']
+            general_feedback_thread_ids = ['thread_1']
+            last_checked = self.now
+
+        obj = user_domain.UserSubscriptions.from_model(DummyModel())
+        self.assertEqual(obj.to_dict()['user_id'], 'user_123')
+        self.assertEqual(obj.to_dict()['last_checked'], self.now.isoformat())

@@ -1801,3 +1801,67 @@ class TranslationCoordinatorStats:
             'coordinator_ids': self.coordinator_ids,
             'coordinators_count': self.coordinators_count
         }
+
+
+class UserSubscriptions:
+    """Domain object for the UserSubscriptionsModel."""
+
+    def __init__(
+        self,
+        user_id: str,
+        creator_ids: List[str],
+        collection_ids: List[str],
+        exploration_ids: List[str],
+        general_feedback_thread_ids: List[str],
+        last_checked: Optional[datetime.datetime] = None
+    ) -> None:
+        self.user_id = user_id
+        self.creator_ids = creator_ids
+        self.collection_ids = collection_ids
+        self.exploration_ids = exploration_ids
+        self.general_feedback_thread_ids = general_feedback_thread_ids
+        self.last_checked = last_checked
+
+    def validate(self) -> None:
+        """Validates the UserSubscriptions domain object."""
+        if not isinstance(self.user_id, str) or not self.user_id:
+            raise utils.ValidationError('user_id must be a non-empty string.')
+
+        for attr_name in [
+            'creator_ids', 'collection_ids', 'exploration_ids', 'general_feedback_thread_ids'
+        ]:
+            attr = getattr(self, attr_name)
+            if not isinstance(attr, list):
+                raise utils.ValidationError(
+                    f'{attr_name} must be a list.')
+            if len(attr) != len(set(attr)):
+                raise utils.ValidationError(
+                    f'{attr_name} must not contain duplicate values.')
+            for item in attr:
+                if not isinstance(item, str) or not item:
+                    raise utils.ValidationError(
+                        f'All elements of {attr_name} must be non-empty strings.')
+
+        if self.last_checked is not None and not isinstance(self.last_checked, datetime.datetime):
+            raise utils.ValidationError('last_checked must be a datetime or None.')
+
+    def to_dict(self) -> dict:
+        return {
+            'user_id': self.user_id,
+            'creator_ids': self.creator_ids,
+            'collection_ids': self.collection_ids,
+            'exploration_ids': self.exploration_ids,
+            'general_feedback_thread_ids': self.general_feedback_thread_ids,
+            'last_checked': self.last_checked.isoformat() if self.last_checked else None
+        }
+
+    @classmethod
+    def from_model(cls, model) -> 'UserSubscriptions':
+        return cls(
+            user_id=model.id,
+            creator_ids=list(model.creator_ids or []),
+            collection_ids=list(model.collection_ids or []),
+            exploration_ids=list(model.exploration_ids or []),
+            general_feedback_thread_ids=list(model.general_feedback_thread_ids or []),
+            last_checked=model.last_checked
+        )
