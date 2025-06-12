@@ -1838,7 +1838,6 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
         super().setUp()
         self.now = datetime.datetime.utcnow()
         self.valid_obj = user_domain.UserSubscriptions(
-            user_id='user_123',
             creator_ids=['creator_1', 'creator_2'],
             collection_ids=['col_1'],
             exploration_ids=['exp_1', 'exp_2'],
@@ -1848,11 +1847,6 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
 
     def test_validate_with_valid_data(self) -> None:
         self.valid_obj.validate()
-
-    def test_validate_with_empty_user_id_raises(self) -> None:
-        self.valid_obj.user_id = ''
-        with self.assertRaisesRegex(utils.ValidationError, 'user_id must be a non-empty string'):
-            self.valid_obj.validate()
 
     def test_validate_with_non_list_creator_ids_raises(self) -> None:
         self.valid_obj.creator_ids = 'notalist'
@@ -1881,7 +1875,6 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
 
     def test_to_dict_and_from_model(self) -> None:
         class DummyModel:
-            id = 'user_123'
             creator_ids = ['creator_1']
             collection_ids = ['col_1']
             exploration_ids = ['exp_1']
@@ -1889,5 +1882,5 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
             last_checked = self.now
 
         obj = user_domain.UserSubscriptions.from_model(DummyModel())
-        self.assertEqual(obj.to_dict()['user_id'], 'user_123')
+        self.assertEqual(obj.to_dict()['creator_ids'], ['creator_1'])
         self.assertEqual(obj.to_dict()['last_checked'], self.now.isoformat())

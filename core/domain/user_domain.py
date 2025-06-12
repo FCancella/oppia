@@ -1808,14 +1808,12 @@ class UserSubscriptions:
 
     def __init__(
         self,
-        user_id: str,
         creator_ids: List[str],
         collection_ids: List[str],
         exploration_ids: List[str],
         general_feedback_thread_ids: List[str],
         last_checked: Optional[datetime.datetime] = None
     ) -> None:
-        self.user_id = user_id
         self.creator_ids = creator_ids
         self.collection_ids = collection_ids
         self.exploration_ids = exploration_ids
@@ -1824,8 +1822,6 @@ class UserSubscriptions:
 
     def validate(self) -> None:
         """Validates the UserSubscriptions domain object."""
-        if not isinstance(self.user_id, str) or not self.user_id:
-            raise utils.ValidationError('user_id must be a non-empty string.')
 
         for attr_name in [
             'creator_ids', 'collection_ids', 'exploration_ids', 'general_feedback_thread_ids'
@@ -1842,12 +1838,14 @@ class UserSubscriptions:
                     raise utils.ValidationError(
                         f'All elements of {attr_name} must be non-empty strings.')
 
-        if self.last_checked is not None and not isinstance(self.last_checked, datetime.datetime):
-            raise utils.ValidationError('last_checked must be a datetime or None.')
+        if self.last_checked is not None:
+            if not isinstance(self.last_checked, datetime.datetime):
+                raise utils.ValidationError('last_checked must be a datetime or None.')
+            if self.last_checked > datetime.datetime.utcnow():
+                raise utils.ValidationError('last_checked cannot be in the future.')
 
     def to_dict(self) -> dict:
         return {
-            'user_id': self.user_id,
             'creator_ids': self.creator_ids,
             'collection_ids': self.collection_ids,
             'exploration_ids': self.exploration_ids,
@@ -1858,7 +1856,6 @@ class UserSubscriptions:
     @classmethod
     def from_model(cls, model) -> 'UserSubscriptions':
         return cls(
-            user_id=model.id,
             creator_ids=list(model.creator_ids or []),
             collection_ids=list(model.collection_ids or []),
             exploration_ids=list(model.exploration_ids or []),
