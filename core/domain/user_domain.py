@@ -1802,6 +1802,14 @@ class TranslationCoordinatorStats:
             'coordinators_count': self.coordinators_count
         }
 
+class UserSubscriptionsDict(TypedDict):
+    """Dictionary representing the UserSubscriptions object."""
+
+    creator_ids: List[str]
+    collection_ids: List[str]
+    exploration_ids: List[str]
+    general_feedback_thread_ids: List[str]
+    last_checked: Optional[datetime.datetime]
 
 class UserSubscriptions:
     """Domain object for the UserSubscriptionsModel."""
@@ -1844,7 +1852,14 @@ class UserSubscriptions:
             if self.last_checked > datetime.datetime.utcnow():
                 raise utils.ValidationError('last_checked cannot be in the future.')
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> UserSubscriptionsDict:
+        """Convert the UserSubscriptions domain instance into a dictionary
+        form with its keys as the attributes of this class.
+        
+        Returns:
+            dict. A dictionary containing the UserSubscriptions class
+            information in a dictionary form.
+        """
         return {
             'creator_ids': self.creator_ids,
             'collection_ids': self.collection_ids,
@@ -1852,13 +1867,3 @@ class UserSubscriptions:
             'general_feedback_thread_ids': self.general_feedback_thread_ids,
             'last_checked': self.last_checked.isoformat() if self.last_checked else None
         }
-
-    @classmethod
-    def from_model(cls, model) -> 'UserSubscriptions':
-        return cls(
-            creator_ids=list(model.creator_ids or []),
-            collection_ids=list(model.collection_ids or []),
-            exploration_ids=list(model.exploration_ids or []),
-            general_feedback_thread_ids=list(model.general_feedback_thread_ids or []),
-            last_checked=model.last_checked
-        )
