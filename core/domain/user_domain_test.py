@@ -1864,7 +1864,7 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
             self.valid_obj.validate()
 
     def test_validate_with_non_string_in_collection_ids_raises(self) -> None:
-        self.valid_obj.collection_ids = [123] # type: ignore[assignment]
+        self.valid_obj.collection_ids = [123] # type: ignore[list-item]
         with self.assertRaisesRegex(
             utils.ValidationError,
             'All elements of collection_ids must be non-empty strings'):
