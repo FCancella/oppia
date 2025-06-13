@@ -1862,7 +1862,7 @@ class UserSubscriptions:
     def to_dict(self) -> UserSubscriptionsDict:
         """Convert the UserSubscriptions domain instance into a dictionary
         form with its keys as the attributes of this class.
-        
+
         Returns:
             dict. A dictionary containing the UserSubscriptions class
             information in a dictionary form.

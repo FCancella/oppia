@@ -1849,7 +1849,7 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
         self.valid_obj.validate()
 
     def test_validate_with_non_list_creator_ids_raises(self) -> None:
-        self.valid_obj.creator_ids = 'notalist'
+        self.valid_obj.creator_ids = 'notalist' # type: ignore[assignment]
         with self.assertRaisesRegex(
             utils.ValidationError,
             'creator_ids must be a list'):
@@ -1864,7 +1864,7 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
             self.valid_obj.validate()
 
     def test_validate_with_non_string_in_collection_ids_raises(self) -> None:
-        self.valid_obj.collection_ids = [123]
+        self.valid_obj.collection_ids = [123] # type: ignore[assignment]
         with self.assertRaisesRegex(
             utils.ValidationError,
             'All elements of collection_ids must be non-empty strings'):
@@ -1878,7 +1878,7 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
             self.valid_obj.validate()
 
     def test_validate_with_invalid_last_checked_type_raises(self) -> None:
-        self.valid_obj.last_checked = 'notadatetime'
+        self.valid_obj.last_checked = 'notadatetime' # type: ignore[assignment]
         with self.assertRaisesRegex(
             utils.ValidationError,
             'last_checked must be a datetime or None'):
