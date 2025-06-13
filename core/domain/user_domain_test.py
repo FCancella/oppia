@@ -1849,6 +1849,8 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
         self.valid_obj.validate()
 
     def test_validate_with_non_list_creator_ids_raises(self) -> None:
+        # Here we use MyPy ignore because we are intentionally assigning an incorrect type
+        # to test the domain object's validation logic.
         self.valid_obj.creator_ids = 'notalist' # type: ignore[assignment]
         with self.assertRaisesRegex(
             utils.ValidationError,
@@ -1864,6 +1866,8 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
             self.valid_obj.validate()
 
     def test_validate_with_non_string_in_collection_ids_raises(self) -> None:
+        # Here we use MyPy ignore because we are intentionally assigning an incorrect type
+        # to test the domain object's validation logic.
         self.valid_obj.collection_ids = [123] # type: ignore[list-item]
         with self.assertRaisesRegex(
             utils.ValidationError,
@@ -1878,6 +1882,8 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
             self.valid_obj.validate()
 
     def test_validate_with_invalid_last_checked_type_raises(self) -> None:
+        # Here we use MyPy ignore because we are intentionally assigning an incorrect type
+        # to test the domain object's validation logic.
         self.valid_obj.last_checked = 'notadatetime' # type: ignore[assignment]
         with self.assertRaisesRegex(
             utils.ValidationError,
