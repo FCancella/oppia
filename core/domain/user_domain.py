@@ -1802,6 +1802,7 @@ class TranslationCoordinatorStats:
             'coordinators_count': self.coordinators_count
         }
 
+
 class UserSubscriptionsDict(TypedDict):
     """Dictionary representing the UserSubscriptions object."""
 
@@ -1810,6 +1811,7 @@ class UserSubscriptionsDict(TypedDict):
     exploration_ids: List[str]
     general_feedback_thread_ids: List[str]
     last_checked: Optional[datetime.datetime]
+
 
 class UserSubscriptions:
     """Domain object for the UserSubscriptionsModel."""
@@ -1832,7 +1834,10 @@ class UserSubscriptions:
         """Validates the UserSubscriptions domain object."""
 
         for attr_name in [
-            'creator_ids', 'collection_ids', 'exploration_ids', 'general_feedback_thread_ids'
+            'creator_ids',
+            'collection_ids',
+            'exploration_ids',
+            'general_feedback_thread_ids'
         ]:
             attr = getattr(self, attr_name)
             if not isinstance(attr, list):
@@ -1844,13 +1849,15 @@ class UserSubscriptions:
             for item in attr:
                 if not isinstance(item, str) or not item:
                     raise utils.ValidationError(
-                        f'All elements of {attr_name} must be non-empty strings.')
+                        f'All elements of {attr_name} must be non-empty strings.') # pylint: disable=line-too-long
 
         if self.last_checked is not None:
             if not isinstance(self.last_checked, datetime.datetime):
-                raise utils.ValidationError('last_checked must be a datetime or None.')
+                raise utils.ValidationError(
+                    'last_checked must be a datetime or None.')
             if self.last_checked > datetime.datetime.utcnow():
-                raise utils.ValidationError('last_checked cannot be in the future.')
+                raise utils.ValidationError(
+                    'last_checked cannot be in the future.')
 
     def to_dict(self) -> UserSubscriptionsDict:
         """Convert the UserSubscriptions domain instance into a dictionary
@@ -1865,5 +1872,5 @@ class UserSubscriptions:
             'collection_ids': self.collection_ids,
             'exploration_ids': self.exploration_ids,
             'general_feedback_thread_ids': self.general_feedback_thread_ids,
-            'last_checked': self.last_checked.isoformat() if self.last_checked else None
+            'last_checked': (self.last_checked)
         }

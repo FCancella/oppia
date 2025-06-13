@@ -1874,7 +1874,7 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
         self.valid_obj.general_feedback_thread_ids = ['']
         with self.assertRaisesRegex(
             utils.ValidationError,
-            'All elements of general_feedback_thread_ids must be non-empty strings'):
+            'All elements of general_feedback_thread_ids must be non-empty strings'): # pylint: disable=line-too-long
             self.valid_obj.validate()
 
     def test_validate_with_invalid_last_checked_type_raises(self) -> None:
