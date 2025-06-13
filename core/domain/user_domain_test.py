@@ -1849,8 +1849,8 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
         self.valid_obj.validate()
 
     def test_validate_with_non_list_creator_ids_raises(self) -> None:
-        # Here we use MyPy ignore because we are intentionally assigning an incorrect type
-        # to test the domain object's validation logic.
+        # Here we use MyPy ignore because we are intentionally assigning
+        # an incorrect type to test the domain object's validation logic.
         self.valid_obj.creator_ids = 'notalist' # type: ignore[assignment]
         with self.assertRaisesRegex(
             utils.ValidationError,
@@ -1866,8 +1866,8 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
             self.valid_obj.validate()
 
     def test_validate_with_non_string_in_collection_ids_raises(self) -> None:
-        # Here we use MyPy ignore because we are intentionally assigning an incorrect type
-        # to test the domain object's validation logic.
+        # Here we use MyPy ignore because we are intentionally assigning
+        # an incorrect type to test the domain object's validation logic.
         self.valid_obj.collection_ids = [123] # type: ignore[list-item]
         with self.assertRaisesRegex(
             utils.ValidationError,
@@ -1882,8 +1882,8 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
             self.valid_obj.validate()
 
     def test_validate_with_invalid_last_checked_type_raises(self) -> None:
-        # Here we use MyPy ignore because we are intentionally assigning an incorrect type
-        # to test the domain object's validation logic.
+        # Here we use MyPy ignore because we are intentionally assigning
+        # an incorrect type to test the domain object's validation logic.
         self.valid_obj.last_checked = 'notadatetime' # type: ignore[assignment]
         with self.assertRaisesRegex(
             utils.ValidationError,
@@ -1892,12 +1892,10 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
 
     def test_validate_with_none_last_checked(self) -> None:
         self.valid_obj.last_checked = None
-        # Should not raise
         self.valid_obj.validate()
 
     def test_validate_with_valid_last_checked_in_past(self) -> None:
         self.valid_obj.last_checked = datetime.datetime(2017, 1, 1)
-        # Should not raise
         self.valid_obj.validate()
 
     def test_validate_with_last_checked_in_future(self) -> None:
