@@ -1902,7 +1902,7 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
         self.valid_obj.last_checked = datetime.datetime(2099, 1, 1)
         with self.assertRaisesRegex(
             utils.ValidationError,
-            'last_checked must not be in the future'):
+            'last_checked cannot be in the future'):
             self.valid_obj.validate()
 
     def test_to_dict_returns_expected_dict(self) -> None:
