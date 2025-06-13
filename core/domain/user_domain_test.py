@@ -1842,7 +1842,7 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
             collection_ids=['col_1'],
             exploration_ids=['exp_1', 'exp_2'],
             general_feedback_thread_ids=['thread_1'],
-            last_checked=self.now
+            last_checked=datetime.datetime(2020, 3, 25)
         )
 
     def test_validate_with_valid_data(self) -> None:
@@ -1889,3 +1889,28 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
             utils.ValidationError,
             'last_checked must be a datetime or None'):
             self.valid_obj.validate()
+
+    def test_validate_with_none_last_checked(self) -> None:
+        self.valid_obj.last_checked = None
+        # Should not raise
+        self.valid_obj.validate()
+
+    def test_validate_with_valid_last_checked_in_past(self) -> None:
+        self.valid_obj.last_checked = datetime.datetime(2017, 1, 1)
+        # Should not raise
+        self.valid_obj.validate()
+
+    def test_validate_with_last_checked_in_future(self) -> None:
+        self.valid_obj.last_checked = datetime.datetime(2099, 1, 1)
+        with self.assertRaisesRegex(
+            utils.ValidationError,
+            'last_checked must not be in the future'):
+            self.valid_obj.validate()
+
+    def test_to_dict_returns_expected_dict(self) -> None:
+        result = self.valid_obj.to_dict()
+        self.assertEqual(result['creator_ids'], ['creator_1', 'creator_2'])
+        self.assertEqual(result['collection_ids'], ['col_1'])
+        self.assertEqual(result['exploration_ids'], ['exp_1', 'exp_2'])
+        self.assertEqual(result['general_feedback_thread_ids'], ['thread_1'])
+        self.assertEqual(result['last_checked'], datetime.datetime(2020, 3, 25))
