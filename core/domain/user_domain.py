@@ -1828,7 +1828,7 @@ class UserSubscriptions:
         """Validates that the given value is a list of
         unique, non-empty strings.
         """
-        
+
         if not isinstance(value, list):
             raise utils.ValidationError(
                 f'{attr_name} must be a list.')
