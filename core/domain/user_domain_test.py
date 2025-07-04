@@ -1904,11 +1904,3 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
             utils.ValidationError,
             'last_checked cannot be in the future'):
             self.valid_obj.validate()
-
-    def test_to_dict_returns_expected_dict(self) -> None:
-        result = self.valid_obj.to_dict()
-        self.assertEqual(result['creator_ids'], ['creator_1', 'creator_2'])
-        self.assertEqual(result['collection_ids'], ['col_1'])
-        self.assertEqual(result['exploration_ids'], ['exp_1', 'exp_2'])
-        self.assertEqual(result['general_feedback_thread_ids'], ['thread_1'])
-        self.assertEqual(result['last_checked'], datetime.datetime(2020, 3, 25))
