@@ -1820,26 +1820,28 @@ class UserSubscriptions:
         self.general_feedback_thread_ids = general_feedback_thread_ids
         self.last_checked = last_checked
 
+    def _validate_unique_str_list(self, value: List[str], attr_name: str) -> None:
+        if not isinstance(value, list):
+            raise utils.ValidationError(
+                f'{attr_name} must be a list.')
+        if len(value) != len(set(value)):
+            raise utils.ValidationError(
+                f'{attr_name} must not contain duplicate values.')
+        for item in value:
+            if not isinstance(item, str) or not item:
+                raise utils.ValidationError(
+                    f'All elements of {attr_name} must be non-empty strings.')
+
     def validate(self) -> None:
         """Validates the UserSubscriptions domain object."""
-
-        for attr_name in [
-            'creator_ids',
-            'collection_ids',
-            'exploration_ids',
-            'general_feedback_thread_ids'
-        ]:
-            attr = getattr(self, attr_name)
-            if not isinstance(attr, list):
-                raise utils.ValidationError(
-                    f'{attr_name} must be a list.')
-            if len(attr) != len(set(attr)):
-                raise utils.ValidationError(
-                    f'{attr_name} must not contain duplicate values.')
-            for item in attr:
-                if not isinstance(item, str) or not item:
-                    raise utils.ValidationError(
-                        f'All elements of {attr_name} must be non-empty strings.') # pylint: disable=line-too-long
+        self._validate_unique_str_list(
+            self.creator_ids, 'creator_ids')
+        self._validate_unique_str_list(
+            self.collection_ids, 'collection_ids')
+        self._validate_unique_str_list(
+            self.exploration_ids, 'exploration_ids')
+        self._validate_unique_str_list(
+            self.general_feedback_thread_ids, 'general_feedback_thread_ids')
 
         if self.last_checked is not None:
             if not isinstance(self.last_checked, datetime.datetime):
