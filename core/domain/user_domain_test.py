@@ -1848,7 +1848,7 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
     def test_validate_with_valid_data(self) -> None:
         self.valid_obj.validate()
 
-    def test_validate_with_non_list_creator_ids_raises(self) -> None:
+    def test_validate_with_non_list_creator_ids_fails(self) -> None:
         # Here we use MyPy ignore because we are intentionally assigning
         # an incorrect type to test the domain object's validation logic.
         self.valid_obj.creator_ids = 'notalist' # type: ignore[assignment]
@@ -1858,14 +1858,14 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
 
             self.valid_obj.validate()
 
-    def test_validate_with_duplicate_exploration_ids_raises(self) -> None:
+    def test_validate_with_duplicate_exploration_ids_fails(self) -> None:
         self.valid_obj.exploration_ids = ['exp_1', 'exp_1']
         with self.assertRaisesRegex(
             utils.ValidationError,
             'exploration_ids must not contain duplicate values'):
             self.valid_obj.validate()
 
-    def test_validate_with_non_string_in_collection_ids_raises(self) -> None:
+    def test_validate_with_non_string_in_collection_ids_fails(self) -> None:
         # Here we use MyPy ignore because we are intentionally assigning
         # an incorrect type to test the domain object's validation logic.
         self.valid_obj.collection_ids = [123] # type: ignore[list-item]
@@ -1874,14 +1874,14 @@ class UserSubscriptionsTests(test_utils.GenericTestBase):
             'All elements of collection_ids must be non-empty strings'):
             self.valid_obj.validate()
 
-    def test_validate_with_empty_string_in_thread_ids_raises(self) -> None:
+    def test_validate_with_empty_string_in_thread_ids_fails(self) -> None:
         self.valid_obj.general_feedback_thread_ids = ['']
         with self.assertRaisesRegex(
             utils.ValidationError,
             'All elements of general_feedback_thread_ids must be non-empty strings'): # pylint: disable=line-too-long
             self.valid_obj.validate()
 
-    def test_validate_with_invalid_last_checked_type_raises(self) -> None:
+    def test_validate_with_invalid_last_checked_type_fails(self) -> None:
         # Here we use MyPy ignore because we are intentionally assigning
         # an incorrect type to test the domain object's validation logic.
         self.valid_obj.last_checked = 'notadatetime' # type: ignore[assignment]
