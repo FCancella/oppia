@@ -1820,7 +1820,13 @@ class UserSubscriptions:
         self.general_feedback_thread_ids = general_feedback_thread_ids
         self.last_checked = last_checked
 
-    def _validate_unique_str_list(self, value: List[str], attr_name: str) -> None:
+    def _validate_unique_str_list(
+        self,
+        value: List[str],
+        attr_name: str
+    ) -> None:
+        """Validates that the given value is a list of
+        unique, non-empty strings."""
         if not isinstance(value, list):
             raise utils.ValidationError(
                 f'{attr_name} must be a list.')
