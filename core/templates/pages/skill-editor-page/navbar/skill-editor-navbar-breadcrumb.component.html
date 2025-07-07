@@ -1,6 +1,29 @@
-<div class="nav navbar-nav oppia-navbar-breadcrumb">
-  <span class="oppia-navbar-breadcrumb-separator"></span>
+<div class="nav navbar-nav oppia-navbar-breadcrumb" *ngIf="skill">
   <span>
-    Skill Editor &gt; {{getTruncatedDescription()}}
+    <a href="/topics-and-skills-dashboard"
+       ngbTooltip="Back to Topics and Skills Dashboard"
+        *ngIf="!canNavigateToSkillEditorPage()"
+       aria-label="Back to topics and skills dashboard"
+       tabindex="0"
+       class="back-to-dashboard">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <i class="fa fa-arrow-left e2e-test-edit-skill-tab"
+       ngbTooltip="Back to Skill"
+       *ngIf="canNavigateToSkillEditorPage()"
+       tabindex="0"
+       aria-label="Back to skill"
+       role="button"
+       (keydown.enter)="navigateToMainTab()"
+       (click)="navigateToMainTab()">
+    </i>
+    {{ skill.getName() }} (v{{ skill.getVersion() }})
+    <i *ngIf="!skillRights.canEditSkill()">( View only mode, you don't have rights to edit this skill)</i>
   </span>
 </div>
+<style>
+  .back-to-dashboard {
+    color: #fff;
+    text-decoration: none;
+  }
+</style>

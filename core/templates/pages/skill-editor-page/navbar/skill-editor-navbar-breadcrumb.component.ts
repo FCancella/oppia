@@ -17,6 +17,10 @@
  */
 
 import {Component} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {Skill} from 'domain/skill/skill-object.model';
+import {SkillRights} from 'domain/skill/skill-rights.model';
+import {SkillEditorRoutingService} from '../services/skill-editor-routing.service';
 import {SkillEditorStateService} from 'pages/skill-editor-page/services/skill-editor-state.service';
 
 @Component({
@@ -25,7 +29,29 @@ import {SkillEditorStateService} from 'pages/skill-editor-page/services/skill-ed
   styleUrls: [],
 })
 export class SkillEditorNavbarBreadcrumbComponent {
-  constructor(private skillEditorStateService: SkillEditorStateService) {}
+  // This property is initialized using Angular lifecycle hooks
+  // where we need to do non-null assertion.
+  skill!: Skill;
+  skillRights!: SkillRights;
+
+  directiveSubscriptions = new Subscription();
+
+  constructor(
+    private skillEditorRoutingService: SkillEditorRoutingService,
+    private skillEditorStateService: SkillEditorStateService
+  ) {}
+
+  canNavigateToSkillEditorPage(): boolean {
+    const activeTab = this.skillEditorRoutingService.getActiveTabName();
+    return (
+      activeTab.startsWith('examples') ||
+      this.skillEditorRoutingService.getLastTabVisited() === 'examples'
+    );
+  }
+
+  navigateToMainTab(): void {
+    this.skillEditorRoutingService.navigateToMainTab();
+  }
 
   getTruncatedDescription(): string {
     const skill = this.skillEditorStateService.getSkill();
@@ -37,5 +63,24 @@ export class SkillEditorNavbarBreadcrumbComponent {
       truncatedDescription += '...';
     }
     return truncatedDescription;
+  }
+
+  ngOnInit(): void {
+    this.directiveSubscriptions.add(
+      this.skillEditorStateService.onSkillInitialized.subscribe(() => {
+        this.skill = this.skillEditorStateService.getSkill();
+      })
+    );
+    this.directiveSubscriptions.add(
+      this.skillEditorStateService.onSkillReinitialized.subscribe(() => {
+        this.skill = this.skillEditorStateService.getSkill();
+      })
+    );
+    this.skill = this.skillEditorStateService.getSkill();
+    this.skillRights = this.skillEditorStateService.getSkillRights();
+  }
+
+  ngOnDestroy(): void {
+    this.directiveSubscriptions.unsubscribe();
   }
 }
