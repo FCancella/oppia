@@ -55,6 +55,10 @@ export class SkillEditorRoutingService {
     return this.activeTab;
   }
 
+  getLastTabVisited(): string {
+    return this.activeTab;
+  }
+
   getTabStatuses(): string {
     return this.activeTab;
   }

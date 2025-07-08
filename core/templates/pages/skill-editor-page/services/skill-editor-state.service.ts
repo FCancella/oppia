@@ -73,16 +73,28 @@ export class SkillEditorStateService {
   };
 
   private _skillChangedEventEmitter = new EventEmitter();
+  private _onSkillInitialized = new EventEmitter<void>();
+  private _onSkillReinitialized = new EventEmitter<void>();
+
+  get onSkillInitialized(): EventEmitter<void> {
+    return this._onSkillInitialized;
+  }
+
+  get onSkillReinitialized(): EventEmitter<void> {
+    return this._onSkillReinitialized;
+  }
 
   private _setSkill = (skill: Skill) => {
     if (!this._skill) {
       // The skill is set directly for the first load.
       this._skill = skill;
+      this._emitSkillInitialized();
     } else {
       // After first initialization, the skill object will be retained for
       // the lifetime of the editor and on every data reload or update, the new
       // contents will be copied into the same retained object.
       this._skill.copyFromSkill(skill);
+      this._emitSkillReinitialized();
     }
     this._skillIsInitialized = true;
     this._skillChangedEventEmitter.emit();
